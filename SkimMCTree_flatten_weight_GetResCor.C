@@ -44,7 +44,7 @@ bool isAbout(float num1=0.0, float num2=0.0) {
 static const long MAXTREESIZE = 1000000000000;
 
 void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
-      int dateStr=20200612,
+      int dateStr=20200616,
       bool flattenBinByBin=kTRUE,
       Double_t v2 = 0.5) 
 {
@@ -233,7 +233,7 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
   else if (isAbout(v2,0.05)) v2Str = "0point05";
 
   TFile* newfile;
-  newfile = new TFile(Form("skims/newOniaTree_Skim_UpsTrig_MC_flattened%s_order%i_%i_v2_%s.root",binByBinStr.Data(),flatOrder,dateStr,v2Str.Data()),"recreate");
+  newfile = new TFile(Form("skims/newOniaTree_Skim_UpsTrig_MC_flattened%s_order%i_n%i_%i_v2_%s.root",binByBinStr.Data(),flatOrder,nevt,dateStr,v2Str.Data()),"recreate");
 
   DiMuon dm;
   TTree* mmtree = new TTree("mmep","dimuonAndEventPlanes");
@@ -500,6 +500,12 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
   Double_t avgqxtrackmid2rec = 0;
   Double_t avgqytrackmid2rec = 0;
 
+  //Calculate average q-vector products for the scalar-product method.
+  Double_t avgqAqB = 0;//averaged over all events
+  Double_t avgqAqC = 0;
+  Double_t avgqBqC = 0;
+  Double_t avgqqAUps = 0;//averaged over upsilon 1s candidates
+
   newfile->cd();
 
   // event loop start
@@ -512,6 +518,20 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
 
     mytree->GetEntry(iev);
   
+    //Before any cuts, find averages of q-vector products.
+    //Nominal: HF2 (8)
+    //A: HFm2 (6), B: HFp2 (7), C: trackmid2 (9)
+    Double_t qAx = qx[6]; Double_t qAy = qy[6];
+    Double_t qBx = qx[7]; Double_t qBy = qy[7];
+    Double_t qCx = qx[9]; Double_t qCy = qy[9];
+    Double_t qAqB = qAx*qBx-qAy*qBy;
+    Double_t qAqC = qAx*qCx-qAy*qCy;
+    Double_t qBqC = qBx*qCx-qBy*qCy;
+    avgqAqB += qAqB;
+    avgqAqC += qAqC;
+    avgqBqC += qBqC;
+
+    //Start cutting down to the upsilons.
     if(!( (HLTriggers&((ULong64_t)pow(2, kTrigSel))) == ((ULong64_t)pow(2, kTrigSel)) ) ) continue;
 
     for (Int_t irqq=0; irqq<Reco_QQ_size; ++irqq) 
@@ -592,6 +612,10 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
 
       ALLPASS++;
 
+      //Find averages of q-vector products.
+      Double_t q0x = qx[8]; Double_t q0y = qy[8];
+      Double_t qqA = q0x*qAx-q0y*qAy;
+      avgqqAUps += qqA;
 
       //Double_t epHFm2 = epang[6];
       //Double_t epHFp2 = epang[7];
@@ -625,10 +649,12 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
         DeltaEptrackmid2 += -cos(2*n*eptrackmid2)*avgSinEptrackmid2[n-1]/n;
         DeltaEptrackmid2 += sin(2*n*eptrackmid2)*avgCosEptrackmid2[n-1]/n;
       }
-      epHF2 = epHF2 + DeltaEp2;
-      epHFm2 = epHFm2 + DeltaEpHFm2;
-      epHFp2 = epHFp2 + DeltaEpHFp2;
-      eptrackmid2 = eptrackmid2 + DeltaEptrackmid2;
+      if (!flattenBinByBin) {
+        epHF2 = epHF2 + DeltaEp2;
+        epHFm2 = epHFm2 + DeltaEpHFm2;
+        epHFp2 = epHFp2 + DeltaEpHFp2;
+        eptrackmid2 = eptrackmid2 + DeltaEptrackmid2;
+      }
       if (epHF2<-pi/2) epHF2 = epHF2+pi;
       if (epHF2>pi/2) epHF2 = epHF2-pi;
       if (epHFm2<-pi/2) epHFm2 = epHFm2+pi;
@@ -821,8 +847,30 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
   dataSet->Write(); 
   newfile->Close();
 
+  //Averaged for scalar product method:
+  TFile* avgSPFile = new TFile(Form("averages/avgSPFile_n%i_%i.root",nevt,dateStr),"RECREATE");
+  TH1D* havgSP = new TH1D("havgSP","avgSP",4,0,4);
+  cout << "sumqqAUps = " << avgqqAUps << endl;
+  cout << "sumqAqB = " << avgqAqB << endl;
+  cout << "sumqAqC = " << avgqAqC << endl;
+  cout << "sumqBqC = " << avgqBqC << endl;
+  avgqAqB = avgqAqB/nevt;
+  avgqAqC = avgqAqC/nevt;
+  avgqBqC = avgqBqC/nevt;
+  avgqqAUps = avgqqAUps/ALLPASS;
+  cout << "avgqqAUps = " << avgqqAUps << endl;
+  cout << "avgqAqB = " << avgqAqB << endl;
+  cout << "avgqAqC = " << avgqAqC << endl;
+  cout << "avgqBqC = " << avgqBqC << endl;
+  havgSP->SetBinContent(1,avgqqAUps);
+  havgSP->SetBinContent(2,avgqAqB);
+  havgSP->SetBinContent(3,avgqAqC);
+  havgSP->SetBinContent(4,avgqBqC);
+  havgSP->Write();
+  avgSPFile->Close();
+
   //include the averages used to calculate the event plane resolution correction.
-  TFile* resCorFile = new TFile(Form("averages/resCorFile%s.root",binByBinStr.Data()),"RECREATE");
+  TFile* resCorFile = new TFile(Form("averages/resCorFile_n%i_%s.root",nevt,binByBinStr.Data()),"RECREATE");
   TH1D* hRint = new TH1D("hRint","EP Resolution factor",1,0,1);
   avgCosAB = avgCosAB/ALLPASS;
   avgCosAC = avgCosAC/ALLPASS;
