@@ -61,7 +61,7 @@ void Get_v2_vs_var(int whichUpsilon=1) {
   cv2->cd(2);
   hv2c->Draw();
 
-  TString outFileName = Form("Ups_%i_v2.root",whichUpsilon);
+  TString outFileName = Form("Plots/Ups_%i_v2.root",whichUpsilon);
   TFile* outFile = new TFile(outFileName,"RECREATE");
   hv2pt->Write();
   hv2c->Write();

@@ -1,7 +1,7 @@
-#include "../SONGKYO.h"
-#include "../tdrstyle.C"
-#include "../CMS_lumi_square.C"
-#include "../cutsAndBinUpsilonV2.h"
+#include "../headerFiles/SONGKYO.h"
+#include "../headerFiles/tdrstyle.C"
+#include "../headerFiles/CMS_lumi_square.C"
+#include "../headerFiles/cutsAndBinUpsilonV2.h"
 #include "fileList.h"
 
 
@@ -20,7 +20,7 @@ void draw_v2_centrality(int whichUpsilon=1, float whichv2=0.5) {
   writeExtraText = true;
 
   //Get v2 histograms
-  TFile* inFile = new TFile(Form("Ups_%i_v2.root",whichUpsilon),"READ");
+  TFile* inFile = new TFile(Form("Plots/Ups_%i_v2.root",whichUpsilon),"READ");
   TH1D* hv2c = (TH1D*)inFile->Get("hv2c;1");
 
   //Make it perfect with shrunk error bars

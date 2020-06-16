@@ -1,10 +1,10 @@
 #include <iostream>
-#include "../rootFitHeaders.h"
+#include "../headerFiles/rootFitHeaders.h"
 #include <RooWorkspace.h>
 #include "TFile.h"
 #include "TH1.h"
 #include "TString.h"
-#include "../cutsAndBinUpsilonV2.h"
+#include "../headerFiles/cutsAndBinUpsilonV2.h"
 #include "TCanvas.h"
 #include "fileList.h"
 
