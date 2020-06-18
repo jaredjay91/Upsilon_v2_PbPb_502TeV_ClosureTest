@@ -29,22 +29,18 @@ void GetYieldsvsPhi( int collId = kAADATA,
   int cLow = 0, int cHigh = 100,
   float muPtCut = 3.5,
        float whichv2=0.5
- )
+ ) {
 
-{
+  //const int numphibins = 4;
+  //float phibins[5] = {0.0, 0.125, 0.25, 0.375, 0.5};
 
-//const int numphibins = 4;
-//float phibins[5] = {0.0, 0.125, 0.25, 0.375, 0.5};
-
-const int numphibins = 4;
-const int phiarraysize = numphibins+1;
-float phibins[phiarraysize] = {0};
-float binsize = 0.5/((float)phiarraysize);
-for (int u=0; u<=phiarraysize; u++) {
-  phibins[u] = ((float)u)*binsize;
-}
-
-
+  const int numphibins = 4;
+  const int phiarraysize = numphibins+1;
+  float phibins[phiarraysize] = {0};
+  float binsize = 0.5*pi/((float)phiarraysize);
+  for (int u=0; u<=phiarraysize; u++) {
+    phibins[u] = ((float)u)*binsize;
+  }
 
   float muEtaCut = 2.4;
   float eta_low = -muEtaCut;

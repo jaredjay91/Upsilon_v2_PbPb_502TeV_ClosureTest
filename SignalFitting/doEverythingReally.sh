@@ -3,7 +3,7 @@
 ./doEverything.sh 0.05
 ./doEverything.sh 0.1
 ./doEverything.sh 0.2
-#./doEverything.sh 0.5
+./doEverything.sh 0.5
 
 collId=kAADATA
 ptLow=0.0

@@ -46,7 +46,7 @@ void drawText(const char *text, float xp, float yp, int textColor=kBlack, int te
 void PlotMCmassAnddphiEp2(
        int collId = kAADATA,
        float ptLow=0, float ptHigh=30,
-       float yLow=0.0, float yHigh=2.4,//Run 1 has p going in -z direction
+       float yLow=0.0, float yHigh=2.4,
        int cLow=0, int cHigh=100,
        float muPtCut=3.5,
        float whichv2=0.5

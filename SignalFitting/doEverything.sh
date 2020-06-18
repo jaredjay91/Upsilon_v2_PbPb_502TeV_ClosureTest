@@ -1,7 +1,7 @@
 #!/bin/bash
 
 whichv2=$1
-date=2020_06_15
+date=2020_06_17_20bins
 
 collId=kAADATA
 ptLow=0.0
@@ -21,8 +21,8 @@ echo $date
 mkdir ExtractedYields
 mkdir Plots
 
-#mv ExtractedYields_2019_09_18_v2_$whichv2 ExtractedYields
-#mv Plots_2019_09_18_v2_$whichv2 Plots
+#mv ExtractedYields_2020_06_17_3_v2_$whichv2 ExtractedYields
+#mv Plots_2020_06_17_3_v2_$whichv2 Plots
 
 #<<COMMENT
 root -b -q -l "PlotMCmassAnddphiEp2.C($collId, 0, 3, $yLow, $yHigh, $cLow, $cHigh, $muPtCut, $whichv2)"

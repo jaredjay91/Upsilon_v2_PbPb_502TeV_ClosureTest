@@ -43,21 +43,22 @@ void Fitv2(
   //Plot it
   TCanvas* c1 = new TCanvas("c1","c1",50,50,550,550);
   yieldsVsPhi->Draw();
-  yieldsVsPhi->GetXaxis()->SetTitle("|#Delta#phi|/#pi");
+  yieldsVsPhi->GetXaxis()->SetTitle("|#Delta#phi|");
   double totalintegral = yieldsVsPhi->Integral(1,4);
   yieldsVsPhi->Scale(1.0/totalintegral);
 
   //Fit it
   /*TF1* fitfunc = new TF1("fitfunc","[0]*( 1 + 2*[1]*cos(2*x*3.14159265) + 2*[2]*cos(3*x*3.14159265) + 2*[3]*cos(4*x*3.14159265))",0,0.5);
   fitfunc->SetParNames("Amp","v2","v3","v4");*/
-  TF1* fitfunc = new TF1("fitfunc","[0]*( 1 + 2*[1]*cos(2*x*3.14159265))",0,0.5);
+  //TF1* fitfunc = new TF1("fitfunc","[0]*( 1 + 2*[1]*cos(2*x*3.14159265))",0,0.5);
+  TF1* fitfunc = new TF1("fitfunc","[0]*( 1 + 2*[1]*cos(2*x))",0,0.5*3.14159265);
   fitfunc->SetParNames("Amp","v2");
   /*TF1* fitfunc = new TF1("fitfunc"," 1 + 2*[1]*cos(2*x*3.14159265)",0,0.5);
   fitfunc->SetParNames("v2");*/
   yieldsVsPhi->Fit("fitfunc");
 
-  double v2Val = fitfunc->GetParameter(1)/binwidth;
-  double v2Err = fitfunc->GetParError(1)/binwidth;
+  double v2Val = fitfunc->GetParameter(1);///binwidth;
+  double v2Err = fitfunc->GetParError(1);///binwidth;
   cout << "v2 = " << v2Val << " +/- " << v2Err << endl;
   TLatex latex;
   latex.SetTextSize(0.05);

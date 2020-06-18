@@ -43,7 +43,7 @@ bool isAbout(float num1=0.0, float num2=0.0) {
 
 static const long MAXTREESIZE = 1000000000000;
 
-void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
+void SkimMCTree_flatten_weight_GetResCor(int nevt=100000,
       int dateStr=20200616,
       bool flattenBinByBin=kTRUE,
       Double_t v2 = 0.5) 
@@ -867,6 +867,11 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
   havgSP->SetBinContent(3,avgqAqC);
   havgSP->SetBinContent(4,avgqBqC);
   havgSP->Write();
+  TH1D* hv2SP = new TH1D("hv2SP","v2SP",1,0,1);
+  Double_t v2SP = avgqqAUps/sqrt(avgqAqB*avgqAqC/avgqBqC);
+  cout << "v2SP = " << v2SP << endl;
+  hv2SP->SetBinContent(1,v2SP);
+  hv2SP->Write();
   avgSPFile->Close();
 
   //include the averages used to calculate the event plane resolution correction.
