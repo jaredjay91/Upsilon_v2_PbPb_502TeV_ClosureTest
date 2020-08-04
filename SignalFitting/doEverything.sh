@@ -1,7 +1,7 @@
 #!/bin/bash
 
 whichv2=$1
-date=2020_06_17_20bins
+date=2020_06_26
 
 collId=kAADATA
 ptLow=0.0

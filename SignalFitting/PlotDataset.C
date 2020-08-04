@@ -85,7 +85,7 @@ void PlotDataset(
   cout << "####################################" << endl;
 
   //unweighted
-  /*RooDataSet *reducedDS = (RooDataSet*)dataset->reduce(RooArgSet(*(ws->var(vars[whichVar])), *(ws->var("weight")), kineCut.Data() );
+  /*RooDataSet *reducedDS = (RooDataSet*)dataset->reduce(RooArgSet(*(ws->var(vars[whichVar])), *(ws->var("weight")), kineCut.Data() ));
   reducedDS->SetName("reducedDS");
   ws->import(*reducedDS);*/
 
