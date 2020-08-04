@@ -26,7 +26,7 @@ Double_t getDPHI_Jared( Double_t phi1, Double_t phi2) {
 
 Double_t restrictToPiOver2(Double_t phi) {
 
-  Double_t newphi;
+  Double_t newphi = phi;
   if (phi>pi/2) newphi = phi-pi;
   else if (phi<-pi/2) newphi = phi+pi;
   return newphi;
@@ -43,8 +43,8 @@ bool isAbout(float num1=0.0, float num2=0.0) {
 
 static const long MAXTREESIZE = 1000000000000;
 
-void SkimMCTree_flatten_weight_GetResCor(int nevt=100000,
-      int dateStr=20200616,
+void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
+      int dateStr=20200626,
       bool flattenBinByBin=kTRUE,
       Double_t v2 = 0.5) 
 {
@@ -83,6 +83,10 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=100000,
   TH1D* hEpHFm2 = new TH1D("hEpHFm2","hEpHFm2",50,-2,2);
   TH1D* hEpHFp2 = new TH1D("hEpHFp2","hEpHFp2",50,-2,2);
   TH1D* hEptrackmid2 = new TH1D("hEptrackmid2","hEptrackmid2",50,-2,2);
+
+  TH1D* hphi = new TH1D("hphi","hphi",50,-2,2);
+  TH1D* hdphi = new TH1D("hdphi","hdphi",50,-2,2);
+  TH1D* hdphiw = new TH1D("hdphiw","hdphiw",50,-2,2);
 
   //TString fnameData1 = "../Oniatree_Ups1SMM_5p02TeV_TuneCP5_Embd_RECO_MC_190610.root";
   //TFile* MCfile = TFile::Open(fnameData1,"READ");
@@ -735,12 +739,13 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=100000,
       hEptrackmid2->Fill(eptrackmid2);
 
       //set dimuon attributes
-      dm.phi    = JP_Reco->Phi();
+      //dm.phi    = JP_Reco->Phi();
+      dm.phi    = restrictToPiOver2(JP_Reco->Phi());
       //dm.ep2 = epang[8];
       dm.ep2 = epHF2;
 
-      dm.dphiEp2 = getDPHI_Jared( dm.phi, dm.ep2);
-      dm.dphiEp2 = restrictToPiOver2(dm.dphiEp2);
+      //dm.dphiEp2 = getDPHI_Jared( dm.phi, dm.ep2);
+      dm.dphiEp2 = restrictToPiOver2(dm.phi-dm.ep2);
       dm.mass   = JP_Reco->M();
       dm.y      = JP_Reco->Rapidity();
       dm.eta    = JP_Reco->Eta();
@@ -754,6 +759,10 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=100000,
       //Add weight
       if (abs(dm.dphiEp2)<3.1416) dm.weight = 1 + 2*v2*cos(2*dm.dphiEp2);
       else dm.weight = 1.0;
+
+      hphi->Fill(dm.phi);
+      hdphi->Fill(dm.dphiEp2);
+      hdphiw->Fill(dm.dphiEp2,dm.weight);
 
       Double_t epHF2old = atan2(qy[8],qx[8])/2;
       Double_t epHFm2old = atan2(qy[6],qx[6])/2;
@@ -1034,6 +1043,16 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=100000,
   c6->SaveAs(Form("plots/EventPlanetrackmid2Change_n%i.png",nevt));
 
   resCorFile->Close();
+
+  TCanvas* c7 = new TCanvas("c7","c7",0,0,400,400);
+  c7->cd();
+  hdphiw->Draw();
+  hdphiw->SetLineColor(2);
+  hdphi->Draw("same");
+
+  TCanvas* c8 = new TCanvas("c8","c8",400,0,400,400);
+  c8->cd();
+  hphi->Draw();
 
   cout << "ptPASS = {" << ptPASS[0] << "," << ptPASS[1] << "," << ptPASS[2] << "}" << endl;
   cout << "centPASS = {" << centPASS[0] << "," << centPASS[1] << "," << centPASS[2] << "," << centPASS[3] << "}" << endl;
