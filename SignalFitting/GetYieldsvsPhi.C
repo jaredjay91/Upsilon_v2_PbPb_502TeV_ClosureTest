@@ -55,6 +55,7 @@ void GetYieldsvsPhi( int collId = kAADATA,
   else if (isAbout(whichv2,0.2)) fileName = flatSkimFileName0point2;
   else if (isAbout(whichv2,0.1)) fileName = flatSkimFileName0point1;
   else if (isAbout(whichv2,0.05)) fileName = flatSkimFileName0point05;
+  else if (isAbout(whichv2,0.0)) fileName = flatSkimFileName0;
 
   TFile* funweighted = new TFile(fileName);
 
@@ -93,7 +94,8 @@ void GetYieldsvsPhi( int collId = kAADATA,
     ws->import(*reducedDS);
 
     float yield = reducedDS->sumEntries();
-    float yielderr = sqrt(yield);
+    //float yielderr = sqrt(yield);
+    float yielderr = 0.052*yield;
     //float dyield = yield/binsize;
     //float dyielderr = yielderr/binsize;
     delete reducedDStmp;

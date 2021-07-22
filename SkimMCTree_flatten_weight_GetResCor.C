@@ -44,10 +44,14 @@ bool isAbout(float num1=0.0, float num2=0.0) {
 static const long MAXTREESIZE = 1000000000000;
 
 void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
-      int dateStr=20200626,
+      int dateStr=20210721,
       bool flattenBinByBin=kTRUE,
-      Double_t v2 = 0.5) 
+      Double_t v2 = 0.5)
 {
+
+  Double_t v2_present_pt[3] = {0.00311049, 0.00856134, 0.0298847};
+  Double_t v2_present_c[4] = {0.00698024, 0.000933421, 0.00656082, 0.0387734};
+  Double_t v2_present_average = 0.022685505;
 
   const int flatOrder = 21;
 
@@ -235,9 +239,10 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
   else if (isAbout(v2,0.2)) v2Str = "0point2";
   else if (isAbout(v2,0.1)) v2Str = "0point1";
   else if (isAbout(v2,0.05)) v2Str = "0point05";
+  else if (isAbout(v2,0.0)) v2Str = "0";
 
   TFile* newfile;
-  newfile = new TFile(Form("skims/newOniaTree_Skim_UpsTrig_MC_flattened%s_order%i_n%i_%i_v2_%s.root",binByBinStr.Data(),flatOrder,nevt,dateStr,v2Str.Data()),"recreate");
+  newfile = new TFile(Form("skims/newOniaTree_Skim_UpsTrig_MC_flattened%s_order%i_n%i_%i_v2_%s_fixed.root",binByBinStr.Data(),flatOrder,nevt,dateStr,v2Str.Data()),"recreate");
 
   DiMuon dm;
   TTree* mmtree = new TTree("mmep","dimuonAndEventPlanes");
@@ -757,7 +762,15 @@ void SkimMCTree_flatten_weight_GetResCor(int nevt=-1,
       dm.phi2 = mumi_Reco->Phi();
 
       //Add weight
-      if (abs(dm.dphiEp2)<3.1416) dm.weight = 1 + 2*v2*cos(2*dm.dphiEp2);
+      Double_t v2_effective = v2;
+      if (v2>0.01) {
+        //Double_t v2_present = (v2_present_pt[whichptbin]+v2_present_c[whichcentbin])/2;
+        Double_t v2_present = v2_present_pt[whichptbin]+v2_present_c[whichcentbin]-v2_present_average;
+        //Double_t v2_present = v2_present_c[whichcentbin];
+        //Double_t v2_present = v2_present_pt[whichptbin];
+        v2_effective = v2-v2_present;
+      }
+      if (abs(dm.dphiEp2)<3.1416) dm.weight = 1 + 2*v2_effective*cos(2*dm.dphiEp2);
       else dm.weight = 1.0;
 
       hphi->Fill(dm.phi);

@@ -27,7 +27,7 @@ Double_t getDPHI_Jared( Double_t phi1, Double_t phi2) {
 
 static const long MAXTREESIZE = 1000000000000;
 
-void SkimMCTree_raw_GetAverageQ(int nevt=-1, int dateStr=20200612) 
+void SkimMCTree_raw_GetAverageQ(int nevt=-1, int dateStr=20210107) 
 {
 
   using namespace std;
@@ -278,28 +278,22 @@ void SkimMCTree_raw_GetAverageQ(int nevt=-1, int dateStr=20200612)
   
     if(!( (HLTriggers&((ULong64_t)pow(2, kTrigSel))) == ((ULong64_t)pow(2, kTrigSel)) ) ) continue;
 
+    if( Centrality<20 || Centrality>180 ) continue;
+
     for (Int_t irqq=0; irqq<Reco_QQ_size; ++irqq) 
     {
-      dm.clear();      // clear the output tree: 
-      dm.run = runNb;
-      dm.lumi = LS ;
-      dm.event = eventNb ;
-      dm.vz = zVtx;
-      dm.cBin = Centrality ;
 
-      JP_Reco = (TLorentzVector*) Reco_QQ_4mom->At(irqq);
-      mupl_Reco = (TLorentzVector*) Reco_mu_4mom->At(Reco_QQ_mupl_idx[irqq]);
-      mumi_Reco = (TLorentzVector*) Reco_mu_4mom->At(Reco_QQ_mumi_idx[irqq]);
+      if ( Reco_QQ_VtxProb[irqq]  < 0.01 ) continue;
 
       if(!( (Reco_QQ_trig[irqq]&((ULong64_t)pow(2, kTrigSel))) == ((ULong64_t)pow(2, kTrigSel)) ) ) continue;
       
       bool passMuonTypePl = true;
-      passMuonTypePl = passMuonTypePl && (Reco_mu_SelectionType[Reco_QQ_mupl_idx[irqq]]&((int)pow(2,1)));
-      passMuonTypePl = passMuonTypePl && (Reco_mu_SelectionType[Reco_QQ_mupl_idx[irqq]]&((int)pow(2,3)));
+      //passMuonTypePl = passMuonTypePl && (Reco_mu_SelectionType[Reco_QQ_mupl_idx[irqq]]&((int)pow(2,1)));
+      //passMuonTypePl = passMuonTypePl && (Reco_mu_SelectionType[Reco_QQ_mupl_idx[irqq]]&((int)pow(2,3)));
 
       bool passMuonTypeMi = true;
-      passMuonTypeMi = passMuonTypeMi && (Reco_mu_SelectionType[Reco_QQ_mumi_idx[irqq]]&((int)pow(2,1)));
-      passMuonTypeMi = passMuonTypeMi && (Reco_mu_SelectionType[Reco_QQ_mumi_idx[irqq]]&((int)pow(2,3)));
+      //passMuonTypeMi = passMuonTypeMi && (Reco_mu_SelectionType[Reco_QQ_mumi_idx[irqq]]&((int)pow(2,1)));
+      //passMuonTypeMi = passMuonTypeMi && (Reco_mu_SelectionType[Reco_QQ_mumi_idx[irqq]]&((int)pow(2,3)));
 
       if(Reco_mu_whichGen[Reco_QQ_mupl_idx[irqq]] == -1) continue;
       if(Reco_mu_whichGen[Reco_QQ_mumi_idx[irqq]] == -1) continue;
@@ -323,8 +317,16 @@ void SkimMCTree_raw_GetAverageQ(int nevt=-1, int dateStr=20200612)
       
       DIMUIDPASS++;
 
-      if ( Reco_QQ_VtxProb[irqq]  < 0.01 ) 
-        continue;
+      dm.clear();      // clear the output tree: 
+      dm.run = runNb;
+      dm.lumi = LS ;
+      dm.event = eventNb ;
+      dm.vz = zVtx;
+      dm.cBin = Centrality ;
+
+      JP_Reco = (TLorentzVector*) Reco_QQ_4mom->At(irqq);
+      mupl_Reco = (TLorentzVector*) Reco_mu_4mom->At(Reco_QQ_mupl_idx[irqq]);
+      mumi_Reco = (TLorentzVector*) Reco_mu_4mom->At(Reco_QQ_mumi_idx[irqq]);
 
       Double_t qxHF2 = qx[8];
       Double_t qyHF2 = qy[8];

@@ -76,6 +76,7 @@ void PlotMCmassAnddphiEp2(
   else if (isAbout(whichv2,0.2)) fileName = flatSkimFileName0point2;
   else if (isAbout(whichv2,0.1)) fileName = flatSkimFileName0point1;
   else if (isAbout(whichv2,0.05)) fileName = flatSkimFileName0point05;
+  else if (isAbout(whichv2,0.0)) fileName = flatSkimFileName0;
 
   TFile* funweighted = new TFile(fileName); 
 

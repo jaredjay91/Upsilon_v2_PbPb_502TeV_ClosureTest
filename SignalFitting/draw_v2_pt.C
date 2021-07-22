@@ -17,7 +17,7 @@ void draw_v2_pt(int whichUpsilon=1, float whichv2=0.5) {
   int numcbins = sizeof(cbins)/sizeof(float)-1;
 
   setTDRStyle();
-  writeExtraText = true;
+  writeExtraText = false;
 
   //Get v2 histograms
   TFile* inFile = new TFile(Form("Plots/Ups_%i_v2.root",whichUpsilon),"READ");
@@ -47,6 +47,10 @@ void draw_v2_pt(int whichUpsilon=1, float whichv2=0.5) {
   TH1D* hsyspt = new TH1D("hsyspt","hsyspt",numptbins,ptbins);
   for (int i=0; i<numptbins; i++) {
     hsyspt->SetBinContent(i+1,0);//0.036 is the largest systematic uncertainty tabulated in the J/Psi analysis.
+    //print out percent difference from true v2.
+    float recov2 = hv2pt->GetBinContent(i+1);
+    cout << "Difference in v2 = " << recov2-whichv2 << endl;
+    cout << "Percent difference in v2 = " << fabs(recov2-whichv2)/whichv2*100 << "%" << endl;
   }
 
   //make TGraphs
@@ -92,6 +96,10 @@ void draw_v2_pt(int whichUpsilon=1, float whichv2=0.5) {
 
   gv2pt_sys->Draw("A5");
   gv2pt->Draw("P");
+
+  TLine* l1 = new TLine(0,whichv2,30,whichv2);
+  l1->SetLineStyle(kDashed);
+  l1->Draw("same");
 
   TLegend *leg= new TLegend(0.7, 0.2, 0.9, 0.3);
   SetLegendStyle(leg);

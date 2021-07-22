@@ -14,7 +14,7 @@ cLow=0
 cHigh=100
 muPtCut=3.5
 
-#<<COMMENT
+<<COMMENT
 root -b -q -l "PlotMCmassAndEpAngles.C($collId, $ptLow, $ptHigh, $yLow, $yHigh, $cLow, $cHigh, $muPtCut)"
 root -b -q -l "PlotMCmassAndEpAngles.C($collId, 0, 3, $yLow, $yHigh, $cLow, $cHigh, $muPtCut)"
 root -b -q -l "PlotMCmassAndEpAngles.C($collId, 3, 6, $yLow, $yHigh, $cLow, $cHigh, $muPtCut)"
@@ -25,4 +25,4 @@ root -b -q -l "PlotMCmassAndEpAngles.C($collId, $ptLow, $ptHigh, $yLow, $yHigh, 
 root -b -q -l "PlotMCmassAndEpAngles.C($collId, $ptLow, $ptHigh, $yLow, $yHigh, 50, 100, $muPtCut)"
 
 root -b -q -l "drawResCor.C()"
-#COMMENT
+COMMENT
