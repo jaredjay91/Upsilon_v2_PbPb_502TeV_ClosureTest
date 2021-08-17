@@ -17,7 +17,8 @@ void draw_v2_pt(int whichUpsilon=1, float whichv2=0.5) {
   int numcbins = sizeof(cbins)/sizeof(float)-1;
 
   setTDRStyle();
-  writeExtraText = false;
+  writeExtraText = true;
+  extraText = "Simulation";
 
   //Get v2 histograms
   TFile* inFile = new TFile(Form("Plots/Ups_%i_v2.root",whichUpsilon),"READ");

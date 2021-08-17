@@ -57,8 +57,10 @@ void PlotMCmassAnddphiEp2(
   float eta_low = -muEtaCut;
   float eta_high = muEtaCut;
   
-  TGaxis::SetMaxDigits(3);
+  TGaxis::SetMaxDigits(4);
   gStyle->SetEndErrorSize(0);
+  gStyle->SetPadTickX(1);
+  gStyle->SetPadTickY(1);
 
   float dphiEp2Low = -1; 
   float dphiEp2High = 1;
@@ -83,7 +85,7 @@ void PlotMCmassAnddphiEp2(
   TString kineCut = Form("pt>%.2f && pt<%.2f && abs(y)>%.2f && abs(y)<%.2f && eta1<%.2f && eta1>%.2f && eta2<%.2f && eta2>%.2f && cBin>%i && cBin<%i",ptLow, ptHigh, yLow, yHigh, eta_high,eta_low, eta_high,eta_low, cLow*2,cHigh*2);
 
   float massLow = 8.0;
-  float massHigh = 10.0;
+  float massHigh = 11.0;
   int   nMassBin  = (massHigh-massLow)*20;
 
   if (muPtCut>0) kineCut = kineCut + Form(" && (pt1>%.2f) && (pt2>%.2f) ", (float)muPtCut, (float)muPtCut);
@@ -118,10 +120,12 @@ void PlotMCmassAnddphiEp2(
   ws->data("reducedDS")->plotOn(myPlot2,Name("dataOS_FIT"),MarkerSize(.8));
 
   myPlot2->SetMinimum(0);
+  myPlot2->SetMaximum(150000);
   myPlot2->SetMarkerStyle(kFullCircle);
   myPlot2->SetTitleSize(0.0);
-  myPlot2->SetTitle("PbPb 1.6nb^{-1} (5.02 TeV)");
-  myPlot2->SetTitleOffset(5.0);
+  //myPlot2->SetTitle("      PbPb 1.6nb^{-1} (5.02 TeV)");
+  //myPlot2->SetTitleOffset(1.0);
+  myPlot2->SetTitle("");
 
   myPlot2->GetYaxis()->SetTitleOffset(1.5);
   myPlot2->GetYaxis()->SetTitle("Counts");
@@ -131,7 +135,7 @@ void PlotMCmassAnddphiEp2(
 
   myPlot2->GetXaxis()->SetTitle("m_{#mu^{+}#mu^{-}} (GeV/c^{2})");
   myPlot2->GetXaxis()->SetTitleOffset(1.5);
-  myPlot2->GetXaxis()->SetLabelOffset(0.04);
+  myPlot2->GetXaxis()->SetLabelOffset(0.02);
   myPlot2->GetXaxis()->SetLabelSize(0.05); //23
   myPlot2->GetXaxis()->SetTitleSize(0.05);  //28
   myPlot2->GetXaxis()->CenterTitle();
@@ -139,14 +143,14 @@ void PlotMCmassAnddphiEp2(
   myPlot2->GetYaxis()->SetTickSize(0.04);
   myPlot2->GetYaxis()->SetNdivisions(404);
   myPlot2->GetXaxis()->SetTickSize(0.03);
-  myPlot2->Draw();
+  myPlot2->Draw("L");
 
 
   TString perc = "%";
   float pos_text_x = 0.2;
   float pos_text_y = 0.7;
   float pos_y_diff = 0.06;
-  float text_size = 16;
+  float text_size = 20;
   int text_color = 1;
   if(ptLow==0) drawText(Form("p_{T}^{#mu#mu} < %.f GeV/c",ptHigh ),pos_text_x,pos_text_y,text_color,text_size);
   else drawText(Form("%.f < p_{T}^{#mu#mu} < %.f GeV/c",ptLow,ptHigh ),pos_text_x,pos_text_y,text_color,text_size);
@@ -159,11 +163,12 @@ void PlotMCmassAnddphiEp2(
   float CMS_text_size = 30;
   float CMS_text_font = 63;
   float CMS_y = 0.83;
-  float CMS_x = 0.78;
+  float CMS_x = 0.75;
   drawText("CMS", CMS_x,CMS_y,text_color,CMS_text_size,CMS_text_font);
-  float Pre_text_size = 20;
+  float Pre_text_size = 24;
   float Pre_text_font = 53;
-  drawText("Preliminary", CMS_x-CMS_text_size/500,CMS_y-Pre_text_size/500,text_color,Pre_text_size,Pre_text_font);
+  drawText("Simulation", CMS_x-CMS_text_size/400,CMS_y-Pre_text_size/500,text_color,Pre_text_size,Pre_text_font);
+  drawText("PbPb 1.6nb^{-1} (5.02 TeV)", 0.45,0.91,text_color,24,43);
 
   c1->Update();
 
@@ -179,10 +184,12 @@ void PlotMCmassAnddphiEp2(
   ws->data("reducedDS")->plotOn(myPlotdphiEp2,Name("dataOS_FIT"),MarkerSize(.8),MarkerColor(kRed));
 
   myPlotdphiEp2->SetMinimum(0);
-  //myPlotdphiEp2->SetMaximum(12000);
+  myPlotdphiEp2->SetMaximum(40000);
+  myPlotdphiEp2->SetTitle("");
+  //myPlotdphiEp2->SetTitleOffset(0.05);
   myPlotdphiEp2->GetXaxis()->SetTitle("#Delta#phi");
   myPlotdphiEp2->GetXaxis()->SetTitleOffset(1.5);
-  myPlotdphiEp2->GetXaxis()->SetLabelOffset(0.04);
+  myPlotdphiEp2->GetXaxis()->SetLabelOffset(0.02);
   myPlotdphiEp2->GetXaxis()->SetLabelSize(0.05); //23
   myPlotdphiEp2->GetXaxis()->SetTitleSize(0.05);  //28
   myPlotdphiEp2->GetXaxis()->CenterTitle();
@@ -194,7 +201,7 @@ void PlotMCmassAnddphiEp2(
   myPlotdphiEp2->Draw();
 
   drawText("CMS", CMS_x,CMS_y,text_color,CMS_text_size,CMS_text_font);
-  drawText("Preliminary", CMS_x-CMS_text_size/500,CMS_y-Pre_text_size/500,text_color,Pre_text_size,Pre_text_font);
+  drawText("Simulation", CMS_x-CMS_text_size/400,CMS_y-Pre_text_size/500,text_color,Pre_text_size,Pre_text_font);
 
   c1->Update();
 
@@ -217,7 +224,7 @@ void PlotMCmassAnddphiEp2(
 
   myPlotEpraw2->Draw("same");
 
-  TLegend fitleg = TLegend(0.66,0.3,0.8,0.5); fitleg.SetTextSize(19);
+  TLegend fitleg = TLegend(0.6,0.3,0.8,0.5); fitleg.SetTextSize(24);
   fitleg.SetTextFont(43);
   fitleg.SetBorderSize(0);
   fitleg.AddEntry(myPlotdphiEp2->findObject("dataOS_FIT"),"weighted","pe");
